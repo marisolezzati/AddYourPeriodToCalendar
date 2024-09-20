@@ -1,0 +1,25 @@
+{
+  "name": "Add your period to Calendar",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Add your period to Calendar.",
+  "icons": {
+    "128": "images/icon.png"
+  },
+  "action": {
+    "default_icon": "images/icon.png",
+    "default_title": "Add your period"
+  },
+  "options_page": "options.html",
+  "permissions": [
+    "storage"
+  ],
+	"content_scripts": [
+    {
+      "js": ["addperiod.js"],
+      "matches": [
+        "https://calendar.google.com/*"
+      ]
+    }
+  ]
+}

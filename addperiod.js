@@ -76,6 +76,10 @@ function getMonth(thisMonth, numberOfMonths){
 		year +=  Math.floor(resultMonth/12);
 		resultMonth =  resultMonth%12;
 	}
+	else if(resultMonth==0){
+		year -=  1;
+		resultMonth =  12;
+	}
 	return year.toString()+('0' + resultMonth).slice(-2).toString();
 }
 

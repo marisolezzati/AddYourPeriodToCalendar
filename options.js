@@ -45,8 +45,13 @@ function loadPeriods(){
 		document.getElementById("list").innerHTML = "";
 		periodData.forEach((element) =>{
 			const div = document.createElement("div");
-			div.innerHTML = "Period From: "+element.startDate+" to "+element.endDate;
+			div.innerHTML = "From: "+element.startDate+" to "+element.endDate;
 			document.getElementById("list").appendChild(div);
+			const removeButton = document.createElement("button");
+			removeButton.innerHTML = "Delete";
+			removeButton.value = element.startDate;
+			removeButton.addEventListener('click', remove);
+			div.appendChild(removeButton);
 		}); 
 	});
 }
@@ -55,3 +60,19 @@ window.onload = function() {
 	document.getElementById("save").addEventListener("click", save);
 	loadPeriods();  
 };
+
+function remove() {
+	chrome.storage.sync.get(["periodData"]).then((result) => {	
+		const elementToRemove = result.periodData.find(p => (p.startDate == this.value));
+		//calculate cycle duration based on the new period (a new period chagnes the duration of the previous cycle)
+		const elementToRemoveIndex = result.periodData.indexOf(elementToRemove);
+		if(result.periodData[elementToRemoveIndex-1]){
+			//there is a previous cycle, calculate its new duration
+			result.periodData[elementToRemoveIndex-1].cycleDuration +=  elementToRemove.cycleDuration;
+		}
+		result.periodData = result.periodData.filter(p => (p.startDate != this.value));
+		chrome.storage.sync.set({"periodData": result.periodData}).then(function(){
+			loadPeriods();
+		});
+	});
+}
